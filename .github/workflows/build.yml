@@ -20,41 +20,19 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            python3-pip build-essential git ffmpeg \
+            sudo apt-get update
+            sudo apt-get install -y \
+            build-essential git ffmpeg \
             libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev \
             libsdl2-ttf-dev libportmidi-dev libswscale-dev \
             libavformat-dev libavcodec-dev zlib1g-dev \
-            openjdk-17-jdk unzip zip autoconf \
-            libtool-bin libtool m4 automake \
-            pkg-config cmake
+            openjdk-17-jdk unzip zip \
+            autoconf automake libtool libltdl-dev \
+            pkg-config cmake m4
 
-      - name: Install dependencies
+      - name: Install Python deps
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            python3-pip \
-            build-essential \
-            git \
-            ffmpeg \
-            libsdl2-dev \
-            libsdl2-image-dev \
-            libsdl2-mixer-dev \
-            libsdl2-ttf-dev \
-            libportmidi-dev \
-            libswscale-dev \
-            libavformat-dev \
-            libavcodec-dev \
-            zlib1g-dev \
-            openjdk-17-jdk \
-            unzip \
-            zip \
-            autoconf \
-            libtool \
-            pkg-config \
-            cmake
-          pip install buildozer cython
+            pip install "cython<3.0" buildozer
 
       - name: Fix libtool macros
         run: |
@@ -67,7 +45,7 @@ jobs:
       
       - name: Install python-for-android dependencies
         run: |
-          pip install python-for-android
+          pip install "cython<3.0" "python-for-android==2023.12.29" buildozer
 
       - name: Build APK
         run: |
