@@ -1,0 +1,216 @@
+#:import from_hex kivy.utils.get_color_from_hex
+#:import colormap kivy.utils.colormap
+# colormap — словник кольорів за назвою: colormap['blue'] = (0, 0, 1, 1)
+
+#:import to_rgba kivy.utils.rgba
+# Функція для перетворення кольору з різних форматів у RGBA.
+
+#:set main_color "#F3AF12"
+#:set main_color_dark "#F37C12"
+
+<Widget>:
+   font_name: 'assets/fonts/Lemon-Regular.ttf'
+
+# Спільний стиль кнопок меню
+<ButtonMenu@Button>:
+   font_size: "50sp"
+   bold: True
+   background_color: 0, 0, 0, 0
+   size_hint: None, None
+   pos_hint: {"center_x": 0.5}
+   width: self.texture_size[0] + dp(40)
+
+   canvas.before:
+      Color:
+         rgba: colormap['white']
+
+      RoundedRectangle:
+         size: self.size
+         pos: self.pos
+         radius: [self.font_size]
+
+      Color:
+         rgba: from_hex(main_color) if self.state == 'normal' else from_hex(main_color_dark)
+
+      RoundedRectangle:
+         size: self.size[0] - dp(6), self.size[1] - dp(6)
+         pos: self.pos[0] + dp(3), self.pos[1] + dp(3)
+         radius: [self.font_size]
+
+<ButtonIcon@ButtonMenu>:
+   font_name: 'assets/fonts/typicons.ttf'
+
+<MenuScreen>:
+   # Правило для класу MenuScreen з main.py.
+   # Kivy шукає збіг імені класу і застосовує цей блок як інтерфейс.
+   BoxLayout:
+      orientation: "vertical"
+      padding: "30dp"
+      spacing: "20dp"
+
+      canvas:
+         Color:
+            rgba: from_hex('#007FFF')
+
+         Rectangle:
+            # source: 'assets/images/field.jpg'
+            # color: from_hex('#00FFFF')
+            size: dp(750), self.height
+            pos: self.center_x - dp(750) / 2, self.y
+
+      Widget:
+         size_hint_y: 0.05
+
+      Image:
+         source: "assets/images/image.png"
+         allow_stretch: True
+         size_hint_y: 0.5
+
+      FloatLayout:
+         size_hint_y: 0.15
+
+         Label:
+            text: "UNDERWATER\nCLICKER"
+            color: 0, 0, 0, 1
+            font_size: "40sp"
+            halign: "center"
+            pos_hint: {"center_x": 0.502, "center_y": 0.498}
+
+         Label:
+            text: "UNDERWATER\nCLICKER"
+            color: from_hex('#3706e4bd')
+            font_size: "40sp"
+            halign: "center"
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+      ButtonMenu:
+         text: "PLAY"
+         size_hint_y: 0.15
+         on_press: root.go_game()
+
+      # ButtonMenu:
+      #    text: "SETTINGS"
+      #    on_press: root.go_settings()
+
+      # ButtonMenu:
+      #    text: "EXIT"
+      #    on_press: root.exit_app()
+
+      BoxLayout:
+         size_hint_y: 0.15
+
+      # Button "Settings"
+         ButtonIcon:
+            text: "\uE04F"
+            on_press: root.go_settings()
+
+         Widget:
+
+         # Button "Exit"
+         ButtonIcon:
+            text: "\uE121"
+            on_press: app.stop()
+
+<GameScreen>:
+   canvas.before:
+      Color:
+         rgba: from_hex('#08E8DE')
+
+      Rectangle:
+         pos: self.pos
+         size: self.size
+
+   BoxLayout:
+      orientation: "vertical"
+      padding: "30dp"
+      spacing: "20dp"
+
+      # Верхнє меню
+      BoxLayout:
+         size_hint_y: 0.12
+
+         # Текстовий напис "Бали"
+         Label:
+            text: str(root.score)
+            color: from_hex('#3706e4bd')
+            font_size: '56sp'
+            size_hint_x: 0.7
+            pos_hint: {'center_x': 0.5}  # центр екрана
+
+           # Кнопка-іконка "Дім"
+         ButtonIcon:
+            text: '\uE08A'
+            on_press: root.go_menu()
+
+       # Ігрова область
+      FloatLayout:
+         size_hint_y: 0.76
+         id: game_window
+
+         Fish:
+            id: fish
+            size_hint: None, None
+            size: dp(200), dp(200)
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
+            center: root.center
+
+         Label:
+            id: level_complete
+            text: '    Level\ncomplete!'
+            color: from_hex('#12F3AF')     #colormap['lawngreen']
+            font_size: '50sp'
+            size_hint_y: None
+            height: self.texture_size[1]
+            x: root.width / 2 - self.width / 2
+            y: root.height / 2 - self.height / 2 + dp(100)
+            opacity: 0
+
+      # Нижнє меню
+      BoxLayout:
+         size_hint_y: 0.12
+
+         # Кнопка-іконка "Налаштування"
+         ButtonIcon:
+            text: '\uE04F'
+            pos_hint: {'y': 0}
+
+      # ButtonMenu:
+      #    text: "Back to Menu"
+      #    on_press: root.go_menu()
+
+<SettingsScreen>:
+   BoxLayout:
+      orientation: "vertical"
+      padding: "30dp"
+      spacing: "20dp"
+
+      Label:
+         text: "Settings"
+         font_size: "40sp"
+
+      ButtonMenu:
+         text: "Back to Menu"
+         size_hint_y: 0.2
+         on_press: root.go_menu()
+
+<RotatedImage>:
+   canvas.before:
+      PushMatrix
+      Rotate:
+         angle: self.angle
+         axis: 0, 0, 1
+         origin: self.center
+
+   canvas.after:
+      PopMatrix
+
+<Fish>:
+   allow_stretch: True
+   # Дозволяє розтягувати зображення під розмір віджета.
+   # За замовчуванням False — зображення зберігає оригінальний розмір.
+
+   keep_ratio: True
+   # Зберігає пропорції зображення при розтягуванні.
+   # Якщо False — зображення може деформуватися.
+   
+   opacity: 0
