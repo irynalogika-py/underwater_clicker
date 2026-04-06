@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
@@ -43,6 +43,11 @@ jobs:
             pkg-config \
             cmake
           pip install buildozer cython
+          
+      - name: Install build deps
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y autoconf automake libtool pkg-config m4 libltdl-dev
 
       - name: Build APK
         run: |
@@ -65,3 +70,7 @@ jobs:
             openjdk-17-jdk unzip zip autoconf \
             libtool-bin libtool m4 automake \
             pkg-config cmake
+
+      - name: Fix libtool macros
+        run: |
+            sudo apt-get install -y libltdl-dev
