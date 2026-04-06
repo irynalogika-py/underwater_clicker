@@ -42,11 +42,7 @@ jobs:
         run: |
             sudo apt-get update
             sudo apt-get install -y autoconf automake libtool pkg-config m4 libltdl-dev
-      
-      - name: Install python-for-android dependencies
-        run: |
-          pip install "cython<3.0" "python-for-android==2023.12.29" buildozer
-
+    
       - name: Build APK
         run: |
           buildozer android debug
